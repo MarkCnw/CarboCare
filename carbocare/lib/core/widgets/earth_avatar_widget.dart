@@ -22,10 +22,10 @@ class EarthAvatarWidget extends StatelessWidget {
       children: [
         // 1. ส่วนอนิเมชั่น Lottie
         SizedBox(
-          height: 200, 
+          height: 200,
           child: Lottie.asset(
             isSick
-                ? 'assets/earth/sick.json'   // ไฟล์ตอนป่วย
+                ? 'assets/earth/sick.json' // ไฟล์ตอนป่วย
                 : 'assets/earth/happy.json', // ไฟล์ตอนยิ้ม
             fit: BoxFit.contain,
             repeat: true,
@@ -33,16 +33,15 @@ class EarthAvatarWidget extends StatelessWidget {
         ),
 
         const SizedBox(height: 15), // เว้นระยะห่างนิดนึง
-
         // 2. ส่วนข้อความใต้รูป (เพิ่มตรงนี้)
         Text(
-          isSick 
-              ? "โลกเริ่มป่วยแล้ว! ลดด่วน 😷" 
-              : "โลกกำลังยิ้ม! ขอบคุณนะ 💚",
+          isSick ? "โลกเริ่มป่วยแล้ว ช่วยโลกด้วยย!!" : "โลกเเข็งเเรง 💚",
           style: TextStyle(
             fontSize: 18, // ปรับขนาดตัวหนังสือ
             fontWeight: FontWeight.bold, // ตัวหนา
-            color: isSick ? Colors.redAccent : Colors.green[700], // เปลี่ยนสีตามอารมณ์
+            color: isSick
+                ? const Color.fromARGB(255, 255, 255, 255)
+                : Colors.green[700], // เปลี่ยนสีตามอารมณ์
           ),
           textAlign: TextAlign.center, // จัดกึ่งกลาง
         ),
