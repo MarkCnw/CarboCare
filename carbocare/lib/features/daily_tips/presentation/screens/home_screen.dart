@@ -46,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    SoundService.stopAmbience();
     _scrollController.dispose();
     super.dispose();
   }
@@ -119,7 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Icon(
                                 Icons.lightbulb,
-                                color: isSick ? Colors.orange : Colors.amber,
+                                color: isSick
+                                    ? Colors.orange
+                                    : Colors.amber,
                               ),
                               const SizedBox(width: 10),
                               Expanded(
@@ -205,15 +206,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const TripEntryScreen(),
+                                builder: (context) =>
+                                    const TripEntryScreen(),
                               ),
                             ).then((_) {
-                              // ✨✨ แก้ไขตรงนี้: สั่งให้เช็คและเล่นเสียงใหม่เมื่อกลับมา ✨✨
+                              // ✨✨ แก้ไขตรงนี้:  ใช้ resumeAmbience แทน playAmbience ✨✨
                               if (context.mounted) {
-                                final state = context.read<TripCubit>().state;
+                                final state = context
+                                    .read<TripCubit>()
+                                    .state;
                                 if (state is TripLoaded) {
                                   final isSick = state.totalCarbon >= 50.0;
-                                  SoundService.playAmbience(isSick: isSick);
+                                  SoundService.resumeAmbience(
+                                    isSick: isSick,
+                                  ); // ✅ ใช้ method ใหม่
                                 }
                               }
                             });

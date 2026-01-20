@@ -5,7 +5,7 @@ class SoundService {
   static final _bgmPlayer = AudioPlayer();    // สำหรับเสียงธรรมชาติ (เล่นวน)
   static final _effectPlayer = AudioPlayer(); // สำหรับเสียง Effect สั้นๆ
 
-  static bool? _lastIsSickState;
+  static bool?  _lastIsSickState;
 
   // --- 1. เล่นเสียง Effect (Heal / Damage) ---
   static Future<void> playEffect({required bool isHealing}) async {
@@ -27,9 +27,9 @@ class SoundService {
   }
 
   // --- 3. ระบบเสียงบรรยากาศ (Ambience) ---
-  static Future<void> playAmbience({required bool isSick}) async {
-    // เช็คว่าสถานะเปลี่ยนไหม หรือเพลงเล่นอยู่แล้วหรือไม่
-    if (_lastIsSickState == isSick && _bgmPlayer.state == PlayerState.playing) {
+  static Future<void> playAmbience({required bool isSick, bool forcePlay = false}) async {
+    // ✅ เพิ่ม forcePlay:  ถ้า true จะบังคับเล่นเสียงใหม่เสมอ
+    if (! forcePlay && _lastIsSickState == isSick && _bgmPlayer.state == PlayerState.playing) {
       return;
     }
 
@@ -42,7 +42,7 @@ class SoundService {
 
     if (isSick) {
       // 😷 เสียงตอนโลกป่วย
-      await _bgmPlayer.play(AssetSource('sounds/sick.mp3')); 
+      await _bgmPlayer.play(AssetSource('sounds/trafffic.mp3')); 
     } else {
       // 🌳 เสียงตอนปกติ
       await _bgmPlayer.play(AssetSource('sounds/nature.mp3'));
@@ -53,5 +53,11 @@ class SoundService {
   static Future<void> stopAmbience() async {
     await _bgmPlayer.stop();
     _lastIsSickState = null;
+  }
+
+  // --- 5. ✅ เพิ่ม method สำหรับ resume เสียงเมื่อกลับมาหน้า Home ---
+  static Future<void> resumeAmbience({required bool isSick}) async {
+    // บังคับเล่นเสียงใหม่เสมอเมื่อกลับมา
+    await playAmbience(isSick:  isSick, forcePlay: true);
   }
 }
