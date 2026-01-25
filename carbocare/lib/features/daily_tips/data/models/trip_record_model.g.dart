@@ -32,9 +32,9 @@ const TripRecordSchema = CollectionSchema(
       name: r'distance',
       type: IsarType.double,
     ),
-    r'vehicleType': PropertySchema(
+    r'itemType': PropertySchema(
       id: 3,
-      name: r'vehicleType',
+      name: r'itemType',
       type: IsarType.string,
     )
   },
@@ -73,7 +73,7 @@ int _tripRecordEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.vehicleType;
+    final value = object.itemType;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -90,7 +90,7 @@ void _tripRecordSerialize(
   writer.writeDouble(offsets[0], object.carbonKg);
   writer.writeDateTime(offsets[1], object.date);
   writer.writeDouble(offsets[2], object.distance);
-  writer.writeString(offsets[3], object.vehicleType);
+  writer.writeString(offsets[3], object.itemType);
 }
 
 TripRecord _tripRecordDeserialize(
@@ -104,7 +104,7 @@ TripRecord _tripRecordDeserialize(
   object.date = reader.readDateTime(offsets[1]);
   object.distance = reader.readDouble(offsets[2]);
   object.id = id;
-  object.vehicleType = reader.readStringOrNull(offsets[3]);
+  object.itemType = reader.readStringOrNull(offsets[3]);
   return object;
 }
 
@@ -549,32 +549,30 @@ extension TripRecordQueryFilter
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeIsNull() {
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'vehicleType',
+        property: r'itemType',
       ));
     });
   }
 
   QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeIsNotNull() {
+      itemTypeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'vehicleType',
+        property: r'itemType',
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeEqualTo(
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -582,7 +580,7 @@ extension TripRecordQueryFilter
   }
 
   QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeGreaterThan(
+      itemTypeGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -590,15 +588,14 @@ extension TripRecordQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeLessThan(
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -606,15 +603,14 @@ extension TripRecordQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeBetween(
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -623,7 +619,7 @@ extension TripRecordQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'vehicleType',
+        property: r'itemType',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -634,49 +630,50 @@ extension TripRecordQueryFilter
   }
 
   QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeStartsWith(
+      itemTypeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeEndsWith(
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeContains(String value, {bool caseSensitive = true}) {
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeContains(
+      String value,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'vehicleType',
+        property: r'itemType',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeMatches(String pattern, {bool caseSensitive = true}) {
+  QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition> itemTypeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'vehicleType',
+        property: r'itemType',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -684,20 +681,20 @@ extension TripRecordQueryFilter
   }
 
   QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeIsEmpty() {
+      itemTypeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'vehicleType',
+        property: r'itemType',
         value: '',
       ));
     });
   }
 
   QueryBuilder<TripRecord, TripRecord, QAfterFilterCondition>
-      vehicleTypeIsNotEmpty() {
+      itemTypeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'vehicleType',
+        property: r'itemType',
         value: '',
       ));
     });
@@ -748,15 +745,15 @@ extension TripRecordQuerySortBy
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> sortByVehicleType() {
+  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> sortByItemType() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'vehicleType', Sort.asc);
+      return query.addSortBy(r'itemType', Sort.asc);
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> sortByVehicleTypeDesc() {
+  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> sortByItemTypeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'vehicleType', Sort.desc);
+      return query.addSortBy(r'itemType', Sort.desc);
     });
   }
 }
@@ -811,15 +808,15 @@ extension TripRecordQuerySortThenBy
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> thenByVehicleType() {
+  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> thenByItemType() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'vehicleType', Sort.asc);
+      return query.addSortBy(r'itemType', Sort.asc);
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> thenByVehicleTypeDesc() {
+  QueryBuilder<TripRecord, TripRecord, QAfterSortBy> thenByItemTypeDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'vehicleType', Sort.desc);
+      return query.addSortBy(r'itemType', Sort.desc);
     });
   }
 }
@@ -844,10 +841,10 @@ extension TripRecordQueryWhereDistinct
     });
   }
 
-  QueryBuilder<TripRecord, TripRecord, QDistinct> distinctByVehicleType(
+  QueryBuilder<TripRecord, TripRecord, QDistinct> distinctByItemType(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'vehicleType', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'itemType', caseSensitive: caseSensitive);
     });
   }
 }
@@ -878,9 +875,9 @@ extension TripRecordQueryProperty
     });
   }
 
-  QueryBuilder<TripRecord, String?, QQueryOperations> vehicleTypeProperty() {
+  QueryBuilder<TripRecord, String?, QQueryOperations> itemTypeProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'vehicleType');
+      return query.addPropertyName(r'itemType');
     });
   }
 }

@@ -1,50 +1,60 @@
-// lib/core/services/api_service.dart
-
 import 'dart:io';
 import 'dart:math';
-import 'dart:convert'; // ✅ สำคัญ
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 
 class ApiService {
   final Dio _dio = Dio();
 
+  // 🔗 ลิงก์ Gist ของคุณ
+  final String myApiUrl = 'https://gist.githubusercontent.com/MarkCnw/126da4dbaf4cc387c3e9c01cbd281b3a/raw/81032daf2c0c6c3a7a772ae4f257733c1507bbcb/tips.json';
+
+  List<String> _healingQuotes = [];
+  List<String> _damageQuotes = [];
+
   ApiService() {
-    // Bypass SSL เพื่อ Emulator
     _dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
+        client.badCertificateCallback = (cert, host, port) => true;
         return client;
       },
     );
   }
 
-  Future<String> getDailyTip() async {
+  // 📥 ฟังก์ชันโหลดข้อมูล (Reactions)
+  Future<void> _fetchData() async {
     try {
-      final String myApiUrl =
-          'https://gist.githubusercontent.com/MarkCnw/126da4dbaf4cc387c3e9c01cbd281b3a/raw/4296a7cb7880f953285debb69a66eb3a23e6a693/tips.json';
-
       final response = await _dio.get(myApiUrl);
-
+      
       if (response.statusCode == 200) {
         final dynamic rawData = response.data;
+        final Map<String, dynamic> jsonData = rawData is String ? jsonDecode(rawData) : rawData;
 
-        // ✅ แปลงให้เป็น Map เสมอ
-        final Map<String, dynamic> jsonData =
-            rawData is String ? jsonDecode(rawData) : rawData;
-
-        final List<dynamic> tipsList = jsonData['tips'];
-
-        final random = Random();
-        return tipsList[random.nextInt(tipsList.length)];
+        if (jsonData.containsKey('reactions')) {
+          final reactions = jsonData['reactions'];
+          _healingQuotes = List<String>.from(reactions['healing'] ?? []);
+          _damageQuotes = List<String>.from(reactions['damaging'] ?? []);
+        }
       }
-
-      return "รักษ์โลก เริ่มที่ตัวเรา 🌍";
     } catch (e) {
-      print("API Error: $e");
-      return "การเดินทางพันลี้ เริ่มต้นที่ก้าวแรก 🚶‍♂️";
+      print("Error fetching API: $e");
     }
+  }
+
+  // 🗣️ ฟังก์ชันขอคำพูดกวนๆ
+  Future<String> getReaction(bool isHealing) async {
+    if (_healingQuotes.isEmpty || _damageQuotes.isEmpty) {
+      await _fetchData();
+    }
+
+    final list = isHealing ? _healingQuotes : _damageQuotes;
+    
+    if (list.isNotEmpty) {
+      return list[Random().nextInt(list.length)];
+    }
+    
+    return isHealing ? "ขอบคุณนะ! 💚" : "มันร้อนนะ! 🔥";
   }
 }

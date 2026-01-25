@@ -10,7 +10,6 @@ class TripHistoryList extends StatelessWidget {
     return BlocBuilder<TripCubit, TripState>(
       builder: (context, state) {
         if (state is TripLoaded) {
-          // --- 1. กรณีไม่มีข้อมูล (Empty State) ---
           if (state.trips.isEmpty) {
             return Center(
               child: Column(
@@ -22,38 +21,41 @@ class TripHistoryList extends StatelessWidget {
                       color: Colors.green.shade50,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.history_edu, size: 50, color: Colors.green.shade300),
+                    child: Icon(Icons.history_edu,
+                        size: 50, color: Colors.green.shade300),
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    'ยังไม่มีการเดินทาง',
+                    'ยังไม่มีการให้อาหารโลก',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 16,
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
-                    'เริ่มบันทึกเพื่อดูสถิติของคุณกันเถอะ!',
-                    style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+                    'ลองลากไอคอนไปให้โลกสิ!',
+                    style: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontSize: 13,
+                    ),
                   ),
                 ],
               ),
             );
           }
 
-          // --- 2. ส่วนหัวข้อ + รายการ (List) ---
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // หัวข้อ (Header)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "ประวัติล่าสุด 🕒",
+                      "ประวัติการให้ 🎁",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -61,7 +63,7 @@ class TripHistoryList extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${state.trips.length} รายการ",
+                      "${state.trips.length} ครั้ง",
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade500,
@@ -72,44 +74,50 @@ class TripHistoryList extends StatelessWidget {
                 ),
               ),
 
-              // รายการ (List Items)
               ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                shrinkWrap: true, // สำคัญ! เพื่อให้แทรกใน Column ได้
-                physics: const NeverScrollableScrollPhysics(), // ปิด scroll ของตัวเอง
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: state.trips.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
                 itemBuilder: (context, index) {
-                  // กลับลำดับให้โชว์อันล่าสุดก่อน (Latest First)
                   final trip = state.trips[state.trips.length - 1 - index];
-                  
-                  // เช็คว่าเป็นฮีโร่ช่วยโลกไหม (คาร์บอนติดลบ หรือ 0)
                   final isHero = trip.carbonKg <= 0;
-                  final vehicleType = trip.vehicleType ?? 'Car';
+                  final itemType = trip.itemType ?? 'car';
 
                   return Dismissible(
                     key: Key(trip.id.toString()),
                     direction: DismissDirection.endToStart,
                     confirmDismiss: (direction) async {
-                       return await showDialog(
+                      return await showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                             title: const Text("ลบรายการ?"),
-                            content: const Text("คุณต้องการลบประวัติการเดินทางนี้ใช่ไหม?"),
+                            content: const Text(
+                                "คุณต้องการลบประวัติการให้นี้ใช่ไหม?"),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
-                                child: const Text("ยกเลิก", style: TextStyle(color: Colors.grey)),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text("ยกเลิก",
+                                    style: TextStyle(color: Colors.grey)),
                               ),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.redAccent,
                                   foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
-                                onPressed: () => Navigator.of(context).pop(true),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
                                 child: const Text("ลบ"),
                               ),
                             ],
@@ -127,9 +135,13 @@ class TripHistoryList extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text("ลบ", style: TextStyle(color: Colors.red.shade700, fontWeight: FontWeight.bold)),
+                          Text("ลบ",
+                              style: TextStyle(
+                                  color: Colors.red.shade700,
+                                  fontWeight: FontWeight.bold)),
                           const SizedBox(width: 8),
-                          Icon(Icons.delete_forever_rounded, color: Colors.red.shade700, size: 28),
+                          Icon(Icons.delete_forever_rounded,
+                              color: Colors.red.shade700, size: 28),
                         ],
                       ),
                     ),
@@ -151,24 +163,24 @@ class TripHistoryList extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          // === 1. ไอคอนยานพาหนะ ===
+                          // ไอคอนไอเท็ม
                           Container(
                             width: 55,
                             height: 55,
                             decoration: BoxDecoration(
-                              color: _getVehicleColor(vehicleType).withOpacity(0.1),
+                              color: _getItemColor(itemType).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: Icon(
-                              _getVehicleIcon(vehicleType),
-                              color: _getVehicleColor(vehicleType),
+                              _getItemIcon(itemType),
+                              color: _getItemColor(itemType),
                               size: 28,
                             ),
                           ),
-                          
+
                           const SizedBox(width: 15),
 
-                          // === 2. รายละเอียดตรงกลาง ===
+                          // รายละเอียด
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +188,7 @@ class TripHistoryList extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      "${trip.distance.toStringAsFixed(1)} km",
+                                      _getItemLabel(itemType),
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w800,
                                         fontSize: 16,
@@ -184,16 +196,19 @@ class TripHistoryList extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    // ป้ายบอกประเภทยานพาหนะเล็กๆ
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade100,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
-                                        vehicleType,
-                                        style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                                        "x${trip.distance.toStringAsFixed(0)}",
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey.shade600,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -201,10 +216,11 @@ class TripHistoryList extends StatelessWidget {
                                 const SizedBox(height: 6),
                                 Row(
                                   children: [
-                                    Icon(Icons.calendar_today_rounded, size: 12, color: Colors.grey.shade400),
+                                    Icon(Icons.calendar_today_rounded,
+                                        size: 12, color: Colors.grey.shade400),
                                     const SizedBox(width: 4),
                                     Text(
-                                      _formatDate(trip.date), // ฟังก์ชันจัดรูปแบบวันที่
+                                      _formatDate(trip.date),
                                       style: TextStyle(
                                         color: Colors.grey.shade500,
                                         fontSize: 12,
@@ -217,35 +233,44 @@ class TripHistoryList extends StatelessWidget {
                             ),
                           ),
 
-                          // === 3. ปริมาณคาร์บอน (ขวาสุด) ===
+                          // ผลกระทบ
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
                                 decoration: BoxDecoration(
-                                  color: isHero ? Colors.green.shade50 : Colors.orange.shade50,
+                                  color: isHero
+                                      ? Colors.green.shade50
+                                      : Colors.orange.shade50,
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
-                                    color: isHero ? Colors.green.shade100 : Colors.orange.shade100,
+                                    color: isHero
+                                        ? Colors.green.shade100
+                                        : Colors.orange.shade100,
                                   ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                      isHero ? Icons.eco : Icons.cloud, 
-                                      size: 14, 
-                                      color: isHero ? Colors.green.shade700 : Colors.orange.shade700
+                                      isHero ? Icons.eco : Icons.cloud,
+                                      size: 14,
+                                      color: isHero
+                                          ? Colors.green.shade700
+                                          : Colors.orange.shade700,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      isHero 
-                                        ? trip.carbonKg.abs().toStringAsFixed(1)
-                                        : "+${trip.carbonKg.toStringAsFixed(1)}",
+                                      isHero
+                                          ? trip.carbonKg.abs().toStringAsFixed(1)
+                                          : "+${trip.carbonKg.toStringAsFixed(1)}",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w800,
-                                        color: isHero ? Colors.green.shade700 : Colors.orange.shade800,
+                                        color: isHero
+                                            ? Colors.green.shade700
+                                            : Colors.orange.shade800,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -257,8 +282,10 @@ class TripHistoryList extends StatelessWidget {
                                 isHero ? "ช่วยโลก 🌏" : "kg CO₂",
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: isHero ? Colors.green.shade400 : Colors.orange.shade300,
-                                  fontWeight: FontWeight.w600
+                                  color: isHero
+                                      ? Colors.green.shade400
+                                      : Colors.orange.shade300,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -277,36 +304,59 @@ class TripHistoryList extends StatelessWidget {
     );
   }
 
-  // --- Helper Functions ---
-
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);
     if (diff.inDays == 0 && now.day == date.day) {
-      return "วันนี้, ${date.hour.toString().padLeft(2,'0')}:${date.minute.toString().padLeft(2,'0')}";
+      return "วันนี้, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
     } else if (diff.inDays == 0 || (diff.inDays == 1 && now.day != date.day)) {
-      return "เมื่อวาน, ${date.hour.toString().padLeft(2,'0')}:${date.minute.toString().padLeft(2,'0')}";
+      return "เมื่อวาน, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
     }
     return "${date.day}/${date.month}/${date.year}";
   }
 
-  IconData _getVehicleIcon(String type) {
+  IconData _getItemIcon(String type) {
     switch (type) {
-      case 'Car': return Icons.directions_car_filled_rounded;
-      case 'Motorcycle': return Icons.two_wheeler_rounded;
-      case 'Bicycle': return Icons.directions_bike_rounded;
-      case 'Walk': return Icons.directions_walk_rounded;
-      default: return Icons.commute_rounded;
+      case 'tree':
+        return Icons.park;
+      case 'water':
+        return Icons.water_drop;
+      case 'motorcycle':
+        return Icons.two_wheeler;
+      case 'car':
+        return Icons.directions_car;
+      default:
+        return Icons.help_outline;
     }
   }
 
-  Color _getVehicleColor(String type) {
+  Color _getItemColor(String type) {
     switch (type) {
-      case 'Car': return Colors.blueAccent;
-      case 'Motorcycle': return Colors.purpleAccent;
-      case 'Bicycle': return Colors.teal;
-      case 'Walk': return Colors.green;
-      default: return Colors.blueGrey;
+      case 'tree':
+        return Colors.green;
+      case 'water':
+        return Colors.blue;
+      case 'motorcycle':
+        return Colors.orange;
+      case 'car':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _getItemLabel(String type) {
+    switch (type) {
+      case 'tree':
+        return 'ต้นไม้';
+      case 'water':
+        return 'น้ำ';
+      case 'motorcycle':
+        return 'มอไซค์';
+      case 'car':
+        return 'รถยนต์';
+      default:
+        return 'ไม่ทราบ';
     }
   }
 }
