@@ -9,6 +9,7 @@ import 'package:carbocare/features/daily_tips/presentation/widgets/dashboard_car
 import 'package:carbocare/features/daily_tips/presentation/widgets/trip_history_list.dart';
 import 'package:carbocare/core/widgets/carbon_status_widget.dart';
 import 'package:carbocare/features/daily_tips/presentation/widgets/feed_menu.dart';
+import 'package:carbocare/features/daily_tips/presentation/widgets/earth_speech_bubble.dart'; // 🆕 เพิ่มบรรทัดนี้
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // (Logic Scroll ซ่อนปุ่ม คงเดิม)
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
         if (_isButtonVisible) setState(() => _isButtonVisible = false);
@@ -53,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
             // -----------------------------------------------------------
             BlocBuilder<TripCubit, TripState>(
               buildWhen: (previous, current) {
-                // Rebuild เฉพาะเมื่อสถานะ (ป่วย/ไม่ป่วย) เปลี่ยนไปจริงๆ
                 if (previous is TripLoaded && current is TripLoaded) {
                   bool wasSick = previous.totalCarbon >= 50;
                   bool isSick = current.totalCarbon >= 50;
@@ -65,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 bool isSick = false;
                 if (state is TripLoaded) {
                   isSick = state.totalCarbon >= 50.0;
-                  // จัดการเสียงตรงนี้ (หรือใช้ BlocListener แยกต่างหากก็ได้)
                   SoundService.playAmbience(isSick: isSick);
                 }
 
@@ -92,33 +90,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: 40),
 
-                  // 2.1 Tip Card (Dynamic: ข้อมูลเปลี่ยน)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: BlocBuilder<TripCubit, TripState>(
-                      builder: (context, state) {
-                        if (state is! TripLoaded) return const SizedBox();
-                        final isSick = state.totalCarbon >= 50.0;
-                        
-                        return Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.95),
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: isSick ? Colors.grey : Colors.green.shade200),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.lightbulb, color: isSick ? Colors.orange : Colors.amber),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(state.dailyTip, style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey.shade800)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  // 2.1 🆕 Speech Bubble จากน้องโลก (แทนที่ Tip Card เดิม)
+                  BlocBuilder<TripCubit, TripState>(
+                    builder: (context, state) {
+                      if (state is! TripLoaded) return const SizedBox();
+                      final isSick = state.totalCarbon >= 50.0;
+                      
+                      return EarthSpeechBubble(
+                        message: state.dailyTip,
+                        isSick: isSick,
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 20),
@@ -143,15 +125,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 30),
 
-                  // 2.3 เมนูอาหาร (✨ STATIC: นิ่งๆ ไม่ต้อง Rebuild)
-                  // สังเกตว่าไม่มี BlocBuilder ครอบตรงนี้แล้ว!
+                  // 2.3 เมนูอาหาร (STATIC)
                   const FeedMenuWidget(),
 
                   const SizedBox(height: 30),
 
                   // 2.4 สถิติต่างๆ (Dynamic)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0), // DashboardCard มี padding ในตัวมั้ย เช็คดู
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: BlocBuilder<TripCubit, TripState>(
                       builder: (context, state) {
                         if (state is! TripLoaded) return const SizedBox();
@@ -180,11 +161,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
-            // -----------------------------------------------------------
-            // 🔘 ส่วนที่ 3: ปุ่มลอย (Static ในแง่ข้อมูล แต่ Dynamic ในแง่ตำแหน่ง)
-            // -----------------------------------------------------------
-         
           ],
         ),
       ),
