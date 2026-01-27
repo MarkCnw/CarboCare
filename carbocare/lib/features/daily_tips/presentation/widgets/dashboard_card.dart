@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class DashboardCard extends StatelessWidget {
-  final double totalDist;
-  final double totalCarbon;
+  // ✨ เปลี่ยนตัวแปรรับค่า เป็นจำนวนครั้ง
+  final int goodCount;
+  final int badCount;
 
   const DashboardCard({
     super.key,
-    required this.totalDist,
-    required this.totalCarbon,
+    required this.goodCount,
+    required this.badCount,
   });
 
   @override
@@ -16,30 +17,29 @@ class DashboardCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          // === กล่องซ้าย: ระยะทาง (สีฟ้า) ===
+          // === การ์ดซ้าย: ช่วยโลก (สีเขียว) ===
           Expanded(
             child: _buildStatCard(
-              icon: Icons.directions_walk, // หรือ directions_car
-              iconColor: Colors.blueAccent,
-              bgColor: Colors.blue.shade50,
-              value: "${totalDist.toStringAsFixed(1)} km",
-              label: "ระยะทางรวม",
-              arrowIcon: Icons.arrow_outward, // ลูกศรชี้ขึ้นขวา
+              icon: Icons.volunteer_activism, // ไอคอนรูปหัวใจ/มือ
+              iconColor: Colors.green,
+              bgColor: Colors.green.shade50,
+              value: "$goodCount ครั้ง", // แสดงจำนวนครั้ง
+              label: "ช่วยโลก 🌿",
+              arrowIcon: Icons.thumb_up_alt_rounded,
             ),
           ),
 
-          const SizedBox(width: 15), // เว้นระยะห่างตรงกลาง
+          const SizedBox(width: 15),
 
-          // === กล่องขวา: คาร์บอน (สีเขียว) ===
+          // === การ์ดขวา: ทำร้ายโลก (สีส้มแดง) ===
           Expanded(
             child: _buildStatCard(
-              icon: Icons.co2,
-              
-              iconColor: Colors.green,
-              bgColor: Colors.green.shade50,
-              value: "${totalCarbon.toStringAsFixed(1)} kg",
-              label: "คาร์บอนสะสม",
-              arrowIcon: Icons.arrow_downward, // ลูกศรชี้ลง (สื่อว่าลด)
+              icon: Icons.whatshot, // ไอคอนไฟ
+              iconColor: Colors.deepOrange,
+              bgColor: Colors.orange.shade50,
+              value: "$badCount ครั้ง", // แสดงจำนวนครั้ง
+              label: "ทำร้ายโลก 🔥",
+              arrowIcon: Icons.warning_rounded,
             ),
           ),
         ],
@@ -47,7 +47,7 @@ class DashboardCard extends StatelessWidget {
     );
   }
 
-  // ฟังก์ชันสร้างการ์ดแต่ละใบ
+  // ฟังก์ชันสร้าง UI (เหมือนเดิม ไม่ต้องแก้ logic ข้างใน)
   Widget _buildStatCard({
     required IconData icon,
     required Color iconColor,
@@ -60,10 +60,10 @@ class DashboardCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(25), // มุมโค้งมนตามรูป
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05), // เงาจางๆ
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -72,28 +72,24 @@ class DashboardCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // แถวบน: ไอคอนวงกลม และ ลูกศรเล็ก
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ไอคอนในวงกลม
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: bgColor, // สีพื้นหลังไอคอน (จางๆ)
+                  color: bgColor,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: iconColor, size: 24),
               ),
-              // ลูกศรเล็กๆ มุมขวาบน
               Icon(arrowIcon, color: Colors.grey.shade300, size: 18),
             ],
           ),
           
-          const SizedBox(height: 20), // ระยะห่าง
+          const SizedBox(height: 20),
 
-          // ตัวเลขค่า (ตัวใหญ่หนา)
           Text(
             value,
             style: const TextStyle(
@@ -105,7 +101,6 @@ class DashboardCard extends StatelessWidget {
           
           const SizedBox(height: 5),
 
-          // ป้ายชื่อ (ตัวเล็กสีเทา)
           Text(
             label,
             style: TextStyle(

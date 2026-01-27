@@ -9,7 +9,7 @@ import 'package:carbocare/features/daily_tips/presentation/widgets/dashboard_car
 import 'package:carbocare/features/daily_tips/presentation/widgets/trip_history_list.dart';
 import 'package:carbocare/core/widgets/carbon_status_widget.dart';
 import 'package:carbocare/features/daily_tips/presentation/widgets/feed_menu.dart';
-import 'package:carbocare/features/daily_tips/presentation/widgets/earth_speech_bubble.dart'; // 🆕 เพิ่มบรรทัดนี้
+import 'package:carbocare/features/daily_tips/presentation/widgets/earth_speech_bubble.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: 40),
 
-                  // 2.1 🆕 Speech Bubble จากน้องโลก (แทนที่ Tip Card เดิม)
+                  // 2.1 Speech Bubble
                   BlocBuilder<TripCubit, TripState>(
                     builder: (context, state) {
                       if (state is! TripLoaded) return const SizedBox();
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 20),
 
-                  // 2.2 น้องโลก (Dynamic: รับของ + เปลี่ยนหน้า)
+                  // 2.2 น้องโลก
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: BlocBuilder<TripCubit, TripState>(
@@ -125,12 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 30),
 
-                  // 2.3 เมนูอาหาร (STATIC)
+                  // 2.3 เมนูอาหาร
                   const FeedMenuWidget(),
 
                   const SizedBox(height: 30),
 
-                  // 2.4 สถิติต่างๆ (Dynamic)
+                  // 2.4 สถิติต่างๆ
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: BlocBuilder<TripCubit, TripState>(
@@ -145,10 +145,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               sickThreshold: 50,
                             ),
                             const SizedBox(height: 30),
+                            
+                            // ✨✨ แก้ไขตรงนี้: ส่ง goodActions/badActions แทน ✨✨
                             DashboardCard(
-                              totalDist: state.totalDistance,
-                              totalCarbon: state.totalCarbon,
+                              goodCount: state.goodActions,
+                              badCount: state.badActions,
                             ),
+                            
                             const SizedBox(height: 30),
                             const TripHistoryList(),
                           ],
